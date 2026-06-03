@@ -1,0 +1,11 @@
+.git
+.gitignore
+.gradle
+.idea
+.vscode
+build
+out
+bin
+*.md
+compose.yml
+requests.http

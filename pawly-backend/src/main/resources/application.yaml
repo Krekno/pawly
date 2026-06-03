@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: pawly-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/pawly}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:supersecretkeysupersecretkeysupersecretkeysupersecretkeysupersecretkey}
+    jwtExpirationMs: 900000 # 15 minutes
+    jwtRefreshExpirationMs: 604800000 # 7 days
+    jwtCookieName: jwt-access
+    jwtRefreshCookieName: jwt-refresh
