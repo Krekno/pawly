@@ -105,6 +105,7 @@ export const authApi = {
 // ----------------------
 export const postApi = {
 	getFeed: () => fetchApi("/posts", { method: "GET" }),
+	getFollowingFeed: () => fetchApi("/posts/following", { method: "GET" }),
 	create: (data: any) => fetchApi("/posts", { method: "POST", body: JSON.stringify(data) }),
 	createReply: (id: string, data: any) =>
 		fetchApi("/posts", {
@@ -124,6 +125,8 @@ export const postApi = {
 // ----------------------
 export const userApi = {
 	getProfile: (username: string) => fetchApi(`/users/${username}`, { method: "GET" }),
+	getFollowers: (username: string) => fetchApi(`/users/${username}/followers`, { method: "GET" }),
+	getFollowing: (username: string) => fetchApi(`/users/${username}/following`, { method: "GET" }),
 	follow: (id: string) => fetchApi(`/users/${id}/follow`, { method: "POST" }),
 	unfollow: (id: string) => fetchApi(`/users/${id}/follow`, { method: "DELETE" }),
 	search: (query: string) => fetchApi(`/users/search?q=${encodeURIComponent(query)}`, { method: "GET" })

@@ -4,6 +4,7 @@ import { use, useEffect, useState } from "react";
 import { userApi, authApi } from "@/lib/api";
 import { PostCard, PostResponse } from "@/components/PostCard";
 import { Button } from "@/components/ui/Button";
+import { UserListModal } from "@/components/UserListModal";
 
 interface UserProfile {
   id: string;
@@ -23,6 +24,10 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalUsers, setModalUsers] = useState<any[]>([]);
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     async function loadProfile() {
@@ -66,6 +71,34 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
     });
   };
 
+  const handleFollowersClick = async () => {
+    setModalTitle("Followers");
+    setModalOpen(true);
+    setModalLoading(true);
+    try {
+      const res = await userApi.getFollowers(username);
+      setModalUsers(res.content || res || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleFollowingClick = async () => {
+    setModalTitle("Following");
+    setModalOpen(true);
+    setModalLoading(true);
+    try {
+      const res = await userApi.getFollowing(username);
+      setModalUsers(res.content || res || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-10 text-muted-foreground">Loading profile...</div>;
   }
@@ -93,23 +126,25 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
         {profile.bio && <p className="text-sm max-w-sm">{profile.bio}</p>}
 
         <div className="flex gap-6 mt-2">
-          <div className="flex flex-col">
+          <button onClick={handleFollowersClick} className="flex flex-col hover:opacity-80 transition-opacity">
             <span className="font-bold text-lg">{profile.followerCount}</span>
             <span className="text-xs text-muted-foreground uppercase tracking-wider">Followers</span>
-          </div>
-          <div className="flex flex-col">
+          </button>
+          <button onClick={handleFollowingClick} className="flex flex-col hover:opacity-80 transition-opacity">
             <span className="font-bold text-lg">{profile.followingCount}</span>
             <span className="text-xs text-muted-foreground uppercase tracking-wider">Following</span>
-          </div>
+          </button>
         </div>
 
-        <Button 
-          variant={profile.isFollowing ? "outline" : "default"} 
-          className="mt-4 w-32"
-          onClick={toggleFollow}
-        >
-          {profile.isFollowing ? "Unfollow" : "Follow"}
-        </Button>
+        {currentUser?.username !== profile.username && (
+          <Button 
+            variant={profile.isFollowing ? "outline" : "default"} 
+            className="mt-4 w-32"
+            onClick={toggleFollow}
+          >
+            {profile.isFollowing ? "Unfollow" : "Follow"}
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-col gap-4 mt-2">
@@ -127,6 +162,14 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
           <p className="text-center text-muted-foreground py-8">No posts yet.</p>
         )}
       </div>
+
+      <UserListModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalTitle}
+        users={modalUsers}
+        loading={modalLoading}
+      />
     </div>
   );
 }

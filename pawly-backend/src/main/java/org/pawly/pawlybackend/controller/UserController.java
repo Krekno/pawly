@@ -49,4 +49,16 @@ public class UserController {
             @RequestParam String q, org.springframework.data.domain.Pageable pageable) {
         return ResponseEntity.ok(userService.searchUsers(q, pageable));
     }
+
+    @GetMapping("/{username}/followers")
+    public ResponseEntity<org.springframework.data.domain.Page<org.pawly.pawlybackend.dto.UserSummaryDto>> getFollowers(
+            @PathVariable String username, org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(userService.getFollowers(username, pageable));
+    }
+
+    @GetMapping("/{username}/following")
+    public ResponseEntity<org.springframework.data.domain.Page<org.pawly.pawlybackend.dto.UserSummaryDto>> getFollowing(
+            @PathVariable String username, org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(userService.getFollowing(username, pageable));
+    }
 }

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { MessageCircle, Heart, Trash2 } from "lucide-react";
 import { postApi } from "@/lib/api";
 
+import { useRouter } from "next/navigation";
+
 export interface UserSummaryDto {
   id: string;
   username: string;
@@ -25,6 +27,7 @@ export interface PostResponse {
 }
 
 export function PostCard({ post, currentUser, onDelete }: { post: PostResponse, currentUser?: any, onDelete?: (id: string) => void }) {
+  const router = useRouter();
   const isLikedByCurrentUser = currentUser
     ? post.likedBy?.some(u => u.id === currentUser.id || u.username === currentUser.username)
     : false;
@@ -74,8 +77,19 @@ export function PostCard({ post, currentUser, onDelete }: { post: PostResponse, 
     }
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Do not navigate if clicking a button or link
+    if ((e.target as HTMLElement).closest('button') || (e.target as HTMLElement).closest('a')) {
+      return;
+    }
+    router.push(`/posts/${post.id}`);
+  };
+
   return (
-    <article className="p-4 border border-border rounded-lg bg-background hover:border-primary transition-colors flex flex-col gap-3">
+    <article 
+      onClick={handleCardClick}
+      className="p-4 border border-border rounded-lg bg-background hover:border-primary transition-colors flex flex-col gap-3 cursor-pointer"
+    >
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center font-bold overflow-hidden shrink-0">
           {post.author.profilePictureUrl ? (

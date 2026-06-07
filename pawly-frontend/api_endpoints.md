@@ -21,6 +21,7 @@ This document outlines all the available API endpoints in the `pawly-backend` ap
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/posts` | [`PostResponse`](#postresponse-dto) | Returns the newly created post. |
 | `GET` | `/api/posts` | `Page<PostResponse>` | Returns a paginated feed of posts. |
+| `GET` | `/api/posts/following` | `Page<PostResponse>` | Returns a paginated feed of posts from followed users. |
 | `GET` | `/api/posts/{id}` | [`PostResponse`](#postresponse-dto) | Returns a specific post by its UUID. |
 | `GET` | `/api/posts/{id}/replies` | `Page<PostResponse>` | Returns a paginated list of replies to a specific post. |
 | `GET` | `/api/posts/search?q={query}` | `Page<PostResponse>` | Returns a paginated list of posts matching the search query. |
@@ -36,6 +37,8 @@ This document outlines all the available API endpoints in the `pawly-backend` ap
 | :--- | :--- | :--- | :--- |
 | `GET` | `/api/users/search?q={query}` | `Page<UserSummaryDto>` | Returns a paginated list of users whose usernames match the search query. |
 | `GET` | `/api/users/{username}` | [`UserProfileResponse`](#userprofileresponse-dto) | Returns the profile details for the specified username. |
+| `GET` | `/api/users/{username}/followers` | `Page<UserSummaryDto>` | Returns a paginated list of followers. |
+| `GET` | `/api/users/{username}/following` | `Page<UserSummaryDto>` | Returns a paginated list of followed users. |
 | `POST` | `/api/users/{id}/follow` | `String` | Returns `"Successfully followed user"` |
 | `DELETE`| `/api/users/{id}/follow` | `String` | Returns `"Successfully unfollowed user"` |
 

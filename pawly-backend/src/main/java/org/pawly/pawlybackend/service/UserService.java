@@ -74,4 +74,26 @@ public class UserService {
         return userRepository.findByUsernameContainingIgnoreCase(query, pageable)
                 .map(user -> new org.pawly.pawlybackend.dto.UserSummaryDto(user.getId(), user.getUsername(), user.getProfilePictureUrl()));
     }
+
+    public org.springframework.data.domain.Page<org.pawly.pawlybackend.dto.UserSummaryDto> getFollowers(String username, org.springframework.data.domain.Pageable pageable) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return followRepository.findByFollowingId(user.getId(), pageable)
+                .map(follow -> new org.pawly.pawlybackend.dto.UserSummaryDto(
+                        follow.getFollower().getId(),
+                        follow.getFollower().getUsername(),
+                        follow.getFollower().getProfilePictureUrl()
+                ));
+    }
+
+    public org.springframework.data.domain.Page<org.pawly.pawlybackend.dto.UserSummaryDto> getFollowing(String username, org.springframework.data.domain.Pageable pageable) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return followRepository.findByFollowerId(user.getId(), pageable)
+                .map(follow -> new org.pawly.pawlybackend.dto.UserSummaryDto(
+                        follow.getFollowing().getId(),
+                        follow.getFollowing().getUsername(),
+                        follow.getFollowing().getProfilePictureUrl()
+                ));
+    }
 }

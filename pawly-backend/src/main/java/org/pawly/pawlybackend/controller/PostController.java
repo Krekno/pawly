@@ -33,6 +33,13 @@ public class PostController {
         return ResponseEntity.ok(postService.getFeed(pageable));
     }
 
+    @GetMapping("/following")
+    public ResponseEntity<Page<PostResponse>> getFollowingFeed(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            Pageable pageable) {
+        return ResponseEntity.ok(postService.getFollowingFeed(userDetails.getId(), pageable));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable UUID id) {
         return ResponseEntity.ok(postService.getPostById(id));

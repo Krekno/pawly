@@ -53,6 +53,11 @@ public class PostService {
                 .map(this::mapToResponse);
     }
 
+    public Page<PostResponse> getFollowingFeed(UUID userId, Pageable pageable) {
+        return postRepository.findFollowingFeed(userId, pageable)
+                .map(this::mapToResponse);
+    }
+
     public Page<PostResponse> getPostsByUser(UUID userId, Pageable pageable) {
         return postRepository.findByUserIdAndParentPostIsNullOrderByCreatedAtDesc(userId, pageable)
                 .map(this::mapToResponse);
