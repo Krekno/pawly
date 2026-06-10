@@ -14,7 +14,6 @@ interface UserProfile {
   createdAt: string;
   followerCount: number;
   followingCount: number;
-  isFollowing?: boolean;
   following?: boolean;
   posts?: PostResponse[];
 }
@@ -37,11 +36,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
           userApi.getProfile(username),
           authApi.getMe().catch(() => null)
         ]);
-        
+
         if (data) {
-          data.isFollowing = data.isFollowing ?? data.following ?? false;
+          data.following = data.following ?? data.following ?? false;
         }
-        
+
         setProfile(data);
         setCurrentUser(meRes);
       } catch (err: any) {
@@ -57,12 +56,12 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
   const toggleFollow = async () => {
     if (!profile) return;
     try {
-      if (profile.isFollowing) {
+      if (profile.following) {
         await userApi.unfollow(profile.id);
-        setProfile({ ...profile, isFollowing: false, followerCount: profile.followerCount - 1 });
+        setProfile({ ...profile, following: false, followerCount: profile.followerCount - 1 });
       } else {
         await userApi.follow(profile.id);
-        setProfile({ ...profile, isFollowing: true, followerCount: profile.followerCount + 1 });
+        setProfile({ ...profile, following: true, followerCount: profile.followerCount + 1 });
       }
     } catch (err) {
       console.error(err);
@@ -123,7 +122,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
             profile.username.charAt(0).toUpperCase()
           )}
         </div>
-        
+
         <div>
           <h1 className="text-2xl font-bold">{profile.username}</h1>
           <p className="text-sm text-muted-foreground mt-1">Joined {new Date(profile.createdAt).toLocaleDateString()}</p>
@@ -143,12 +142,12 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
         </div>
 
         {currentUser?.username !== profile.username && (
-          <Button 
-            variant={profile.isFollowing ? "outline" : "default"} 
+          <Button
+            variant={profile.following ? "outline" : "default"}
             className="mt-4 w-32"
             onClick={toggleFollow}
           >
-            {profile.isFollowing ? "Unfollow" : "Follow"}
+            {profile.following ? "Unfollow" : "Follow"}
           </Button>
         )}
       </div>
@@ -157,11 +156,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
         <h2 className="text-xl font-bold px-2">Posts</h2>
         {profile.posts && profile.posts.length > 0 ? (
           profile.posts.map((post) => (
-            <PostCard 
-              key={post.id} 
-              post={post} 
-              currentUser={currentUser} 
-              onDelete={handlePostDeleted} 
+            <PostCard
+              key={post.id}
+              post={post}
+              currentUser={currentUser}
+              onDelete={handlePostDeleted}
             />
           ))
         ) : (
