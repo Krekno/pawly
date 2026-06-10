@@ -14,7 +14,8 @@ interface UserProfile {
   createdAt: string;
   followerCount: number;
   followingCount: number;
-  isFollowing: boolean;
+  isFollowing?: boolean;
+  following?: boolean;
   posts?: PostResponse[];
 }
 
@@ -36,6 +37,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ username
           userApi.getProfile(username),
           authApi.getMe().catch(() => null)
         ]);
+        
+        if (data) {
+          data.isFollowing = data.isFollowing ?? data.following ?? false;
+        }
+        
         setProfile(data);
         setCurrentUser(meRes);
       } catch (err: any) {

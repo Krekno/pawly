@@ -18,4 +18,9 @@ public class UserProfileResponse {
     @JsonProperty("isFollowing")
     private boolean isFollowing;
     private List<PostResponse> posts;
+
+    @JsonProperty("isFollowing")
+    public boolean isFollowing() {
+        return this.isFollowing;
+    }
 }
